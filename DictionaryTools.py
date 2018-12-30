@@ -451,8 +451,9 @@ class DictionaryEngine:
 					bFound = True
 
 					# perf improvement: if not searching for a pattern stop after 1.
-					if (searchType != "pattern"):
-						break
+					# 20181223 - Removed limit, search for exact word as encword failed if not first in results.
+					#if (searchType != "pattern"):
+					#	break
 
 			# Print not found results
 			if (not bFound):
