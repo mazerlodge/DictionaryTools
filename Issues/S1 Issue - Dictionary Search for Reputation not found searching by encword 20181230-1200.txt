@@ -1,0 +1,23 @@
+S1 Issue - Dictionary Search for Reputation not found searching by encword 20181230-1200 
+
+Issue Why was reputation not found when searching by encword TIAQRMRWBC?
+
+Example:
+./dict.py -os mac -action search -searchtype word -target reputation
+reputation,10,ABCDEFEGHI,aeinoprttu
+
+./dict.py -os mac -action search -searchtype encword -target TIAQRMRWBC
+doMaskGen: The mask is ABCDEFEGHI
+Searching for generated pattern.
+colatitude,10,ABCDEFEGHI,acdeilottu
+
+Note- generated masks match, iPhone version returns 23 matches, 'colatitude' is the first one. 
+
+Resolution: 
+Operating as designed, see comment in source DictionaryTools.py, doSearch() method:
+# perf improvement: if not searching for a pattern stop after 1.
+
+
+20181223 - Removed limit, search for exact word as encword failed if not first in results.
+
+
