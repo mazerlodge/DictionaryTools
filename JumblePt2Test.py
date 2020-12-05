@@ -20,7 +20,7 @@ class Foo:
 
 		searchWindow = rawString[0:5]
 		
-		print searchWindow
+		print(searchWindow)
 		
 # === Exec Starts Here ===
 		

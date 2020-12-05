@@ -26,7 +26,6 @@ de = DictionaryEngine(sys.argv)
 # If startup parameters are OK do action specified.
 if (not de.bInitOK):
 	de.showUsage()
-	sys.exit()
 else:
 	de.doAction()
 	

@@ -133,7 +133,8 @@ class DictionaryEngine:
 		# Determine if all subtests passed
 		for idx in range(len(subtestResults)):
 			if (self.bInDebug):
-				print "Arg subtest " + str(subtestResults[idx])
+				msg = "Arg subtest {0}".format(str(subtestResults[idx]))
+				print(msg)
 			rval = rval and subtestResults[idx]
 				
 		return(rval)
@@ -193,7 +194,7 @@ class DictionaryEngine:
 		searchResult = self.doSearch("word", newWord, True)
 		
 		if (len(searchResult) > 0):
-			print "addWordToDictionary: The word is already in dictionary."
+			print("addWordToDictionary: The word is already in dictionary.")
 			return
 			
 		# generate line to add to the dictionary
@@ -203,7 +204,7 @@ class DictionaryEngine:
 								self.doSortGen(newWord)])
 		line2Add = line2Add + "\n"
 				
-		print "Line to add: " + line2Add			
+		print("Line to add: %s" % line2Add)
 
 	
 		# set dictionary path based on OS
@@ -297,7 +298,7 @@ class DictionaryEngine:
 					
 			# check governor
 			if (cycleCount > cycleLimit):
-				print "advanceOdometer hit governor limit, exiting."
+				print("advanceOdometer hit governor limit, exiting.")
 				bDone = True
 				
 			
@@ -323,7 +324,7 @@ class DictionaryEngine:
 			oIdx.append(i)
 		
 		# Generate Phrase List 
-		print "Building distinct potential jumble list..."
+		print("Building distinct potential jumble list...")
 		odoCycleCount = 0
 		
 		# set cycle limit to length of letter list factorial for windowsize range.
@@ -335,7 +336,7 @@ class DictionaryEngine:
 			
 		msgInterval = cycleLimit * .1
 		ci = msgInterval
-		print "Cycle Limit set to " + str(cycleLimit)
+		print("Cycle Limit set to %d" % cycleLimit)
 		bDone = False
 		while(not bDone): 
 			odoCycleCount += 1
@@ -344,7 +345,7 @@ class DictionaryEngine:
 			sortedPhrase = self.doSortGen(phrase)
 			
 			if (self.bInDebug):
-				print "doJumblePt2: phrase = " + phrase, str(oIdx[0]), str(oIdx[1]), str(oIdx[2])
+				print("doJumblePt2: phrase = %s %s %s %s" % phrase, str(oIdx[0]), str(oIdx[1]), str(oIdx[2]))
 			
 			if(phraseList.count(sortedPhrase) == 0):
 				phraseList.append(sortedPhrase) 
@@ -359,17 +360,17 @@ class DictionaryEngine:
 				
 			# Check governor for runaway process
 			if (odoCycleCount > cycleLimit):
-				print "doJumblePt2: Cycle limit governor hit."
+				print("doJumblePt2: Cycle limit governor hit.")
 				bDone = True
 				
 			if (odoCycleCount > ci):
-				print "Working, cycle limit percent consumed = " + str(odoCycleCount*1.0/cycleLimit)
+				print("Working, cycle limit percent consumed = %f" % str(odoCycleCount*1.0/cycleLimit))
 				ci += msgInterval
 
-		print "Cycles used = %s " % odoCycleCount
+		print("Cycles used = %d " % odoCycleCount)
 	
 		# Process phrases through jumble evaluation 
-		print("Processing, letter combos count = " + str(len(phraseList)))
+		print("Processing, letter combos count = %s " % str(len(phraseList)))
 		
 		# Walk the phrase list, finding jumble matches, adding them to 
 		#   the distinct match list.
@@ -387,17 +388,17 @@ class DictionaryEngine:
 						matchList.append(m)
 						
 			if (loopCount > ci):
-				print "Working, combos processed = " + str(loopCount*1.0/phraseCount)
+				print("Working, combos processed = %f" % str(loopCount*1.0/phraseCount))
 				ci += msgInterval
 				
 		# end for phrase...
 		
 		if (len(matchList) == 0):
-			print "No matches found"
+			print("No matches found")
 		else:
 			for aMatch in matchList:
-				print aMatch
-			print "Match count = " + str(len(matchList))
+				print(aMatch)
+			print("Match count = %d" % str(len(matchList)))
 
 
 	def showMsg(self, msg, bQuiet):
@@ -455,7 +456,7 @@ class DictionaryEngine:
 					#if (searchType != "pattern"):
 					#	break
 
-			# Print not found results
+			# OUtput not found results
 			if (not bFound):
 				self.showMsg("%r not found" % word2find, bQuiet)
 				
@@ -525,7 +526,7 @@ class DictionaryEngine:
 	def doMaint(self):
 
 		if (self.bInDebug):
-			print "doMaint: Processing maintenance type [%s]" % self.maintType
+			print("doMaint: Processing maintenance type [%s]" % self.maintType)
 
 		# determine which maintenance to do 		
 		if (self.maintType == "gensortcolumn"):
@@ -537,7 +538,7 @@ class DictionaryEngine:
 	def doAction(self):
 	
 		if (self.bInDebug):
-			print "doAction: Processing action [%s]" % self.action
+			print("doAction: Processing action [%s]" % self.action)
 	
 		# determine which action to execute
 		if (self.action == "search"):
@@ -551,8 +552,3 @@ class DictionaryEngine:
 
 		if (self.action == "maint"):
 			self.doMaint()
-	
-	
-	
-
-
