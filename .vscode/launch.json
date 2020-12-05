@@ -20,7 +20,7 @@
 			"request": "launch",
 			"program": "dict.py",
 			"console": "integratedTerminal",
-			"args": ["-os", "mac", "-action", "search", "-searchtype", "word", "-target", "fish", "-debug"]
+			"args": ["-os", "mac", "-action", "jumblept2", "-target", "STAINED", "-windowsize", "2", "-debug"]
 		}
 
 	]

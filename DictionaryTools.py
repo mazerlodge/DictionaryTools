@@ -133,7 +133,7 @@ class DictionaryEngine:
 		# Determine if all subtests passed
 		for idx in range(len(subtestResults)):
 			if (self.bInDebug):
-				msg = "Arg subtest {0}".format(str(subtestResults[idx]))
+				msg = "Arg subtest {0}".format(subtestResults[idx])
 				print(msg)
 			rval = rval and subtestResults[idx]
 				
@@ -336,16 +336,13 @@ class DictionaryEngine:
 			
 		msgInterval = cycleLimit * .1
 		ci = msgInterval
-		print("Cycle Limit set to %d" % cycleLimit)
+		print("Cycle Limit set to %d msgInterval=%d" % (cycleLimit, ci))
 		bDone = False
 		while(not bDone): 
 			odoCycleCount += 1
 			
 			phrase = self.readOdometer(odometer, oIdx)
 			sortedPhrase = self.doSortGen(phrase)
-			
-			if (self.bInDebug):
-				print("doJumblePt2: phrase = %s %s %s %s" % phrase, str(oIdx[0]), str(oIdx[1]), str(oIdx[2]))
 			
 			if(phraseList.count(sortedPhrase) == 0):
 				phraseList.append(sortedPhrase) 
@@ -364,13 +361,14 @@ class DictionaryEngine:
 				bDone = True
 				
 			if (odoCycleCount > ci):
-				print("Working, cycle limit percent consumed = %f" % str(odoCycleCount*1.0/cycleLimit))
+				pctDone = float(odoCycleCount)/float(cycleLimit)
+				print("Working, cycle limit percent consumed = %f" % pctDone)
 				ci += msgInterval
 
 		print("Cycles used = %d " % odoCycleCount)
 	
 		# Process phrases through jumble evaluation 
-		print("Processing, letter combos count = %s " % str(len(phraseList)))
+		print("Processing, letter combos count = %d " % len(phraseList))
 		
 		# Walk the phrase list, finding jumble matches, adding them to 
 		#   the distinct match list.
@@ -388,7 +386,7 @@ class DictionaryEngine:
 						matchList.append(m)
 						
 			if (loopCount > ci):
-				print("Working, combos processed = %f" % str(loopCount*1.0/phraseCount))
+				print("Working, combos processed = {0}".format(loopCount*1.0/phraseCount))
 				ci += msgInterval
 				
 		# end for phrase...
@@ -398,7 +396,7 @@ class DictionaryEngine:
 		else:
 			for aMatch in matchList:
 				print(aMatch)
-			print("Match count = %d" % str(len(matchList)))
+			print("Match count = %d" % len(matchList))
 
 
 	def showMsg(self, msg, bQuiet):
