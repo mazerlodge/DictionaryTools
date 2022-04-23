@@ -1,6 +1,6 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
-# Version: 20170825-2015
+# Version: 20220423-1458
 
 # Opens dictionary and checks for a word, pattern, substitution encrypted word, or jumble. 
 
@@ -12,6 +12,8 @@ About searches: find a word, pattern (like ABBC), substitution encoded word (lik
 	Params for -action jumblept2: -target letterList -windowsize n  
 	Params for -action genmask: -target targetPhrase 
 	Params for -action maint: -mainttype [ gensortcolumn | addword ] -target word_to_add 
+	Params for -action wordle: -include letterList -require letterList -omit letterList
+		Note: For -action wordle, include list must contain all letters in the require list.
  	Note: search for word or encword returns first match, pattern returns all matches.
 
 """

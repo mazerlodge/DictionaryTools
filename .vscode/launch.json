@@ -6,7 +6,7 @@
 	"configurations": [
 
 		{
-			"name": "Python: Current File",
+			"name": "Py: Current File",
 			"type": "python",
 			"request": "launch",
 			"program": "${file}",
@@ -15,12 +15,26 @@
 		},
 
 		{
-			"name": "Python: Def Startup",
+			"name": "Test JumblePt2",
 			"type": "python",
 			"request": "launch",
 			"program": "dict.py",
 			"console": "integratedTerminal",
 			"args": ["-os", "mac", "-action", "jumblept2", "-target", "STAINED", "-windowsize", "2", "-debug"]
+		},
+
+		{
+			"name": "Wordle Test",
+			"type": "python",
+			"request": "launch",
+			"program": "dict.py",
+			"console": "integratedTerminal",
+			"args": ["-os", "mac", 
+					 "-action", "wordle", 
+					 "-include", "qweyiofgjklzxvb", 
+					 "-require", "ive", 
+					 "-omit", "rtupasdhcnm",
+					 "-nodebug"]
 		}
 
 	]

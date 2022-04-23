@@ -14,12 +14,17 @@ class DictionaryEngine:
 	# Setup variables
 	bInitOK = False
 	bInDebug = False
+	bHasRequireList = False
+	bHasOmitList = False
 	osType = "NOT_SET"
 	maintType = "NOT_SET"
 	searchType = "NOT_SET"
 	dictionaryPath = "NOT_SET"
 	outDictionaryPath = "NOT_SET"
 	targetPhrase = "NOT_SET" 
+	includeList = "NOT_SET"
+	requireList = "NOT_SET"
+	omitList = "NOT_SET"
 	action = "NOT_SET"
 	lines = []
 	windowSize = -1
@@ -38,6 +43,8 @@ class DictionaryEngine:
 				+ "\tParams for -action jumblept2: -target letterList -windowsize n  \n"
 				+ "\tParams for -action genmask: -target targetPhrase \n"
 				+ "\tParams for -action maint: -mainttype [ gensortcolumn | addword ] -target word_to_add \n "
+				+ "\tParams for -action wordle: -include letterList -require letterList -omit letterList\n "
+				+ "\t\tNote: For -action wordle, include list must contain all letters in the require list.\n "
 				+ "\tNote: search for word or encword returns first match, pattern returns all matches.\n")
 		
 	def parseArgs(self,args):
@@ -103,6 +110,37 @@ class DictionaryEngine:
 			rv = False
 			if (ap.isInArgs("-target", True)):
 				self.targetPhrase = ap.getArgValue("-target")
+				rv = True
+			subtestResults.append(rv)
+
+		# check for Wordle 
+		if (self.action == "wordle"):
+			# widowSize is always 5 for Wordle
+			self.windowSize = 5 
+			
+			rv = False
+			if (ap.isInArgs("-include", True)):
+				self.includeList = ap.getArgValue("-include")
+				msg = "Inc List {0}".format(self.includeList)
+				print(msg)				
+				rv = True
+			subtestResults.append(rv)
+
+			# Wordle also may optionally have a require list 
+			rv = True # not a required parameter
+			if (ap.isInArgs("-require", True)):
+				self.requireList = ap.getArgValue("-require")
+				self.bHasRequireList = True
+				msg = "Req List {0}".format(self.requireList)
+				print(msg)				
+				rv = True
+			subtestResults.append(rv)
+
+			# Wordle also may optionally have a omit list 
+			rv = True # not a required parameter
+			if (ap.isInArgs("-omit", True)):
+				self.bHasOmitList = True
+				self.omitList = ap.getArgValue("-omit")
 				rv = True
 			subtestResults.append(rv)
 			
@@ -174,7 +212,7 @@ class DictionaryEngine:
 			line2write = aline
 			# if the line is commented out, don't add sort column
 			if aline[0] != '#':	
-				line2write = aline.strip() + "," + doSortGen(parts[0]) + "\n"
+				line2write = aline.strip() + "," + self.doSortGen(parts[0]) + "\n"
 			file.write(line2write)
 			outLineCount += 1
 
@@ -283,7 +321,7 @@ class DictionaryEngine:
 					if (oIdx[x] > wheelLength-(windowSize-x)):
 						oIdx[x] = wheelLength-1
 			
-			# mark as done if there are no dupes except for all maxes
+			# set as done if there are no dupes except for all maxes
 			bDone = True
 			maxCount = 0
 			for x in range(0, len(oIdx)):
@@ -338,6 +376,7 @@ class DictionaryEngine:
 		ci = msgInterval
 		print("Cycle Limit set to %d msgInterval=%d" % (cycleLimit, ci))
 		bDone = False
+		print("Building Phrase List...")
 		while(not bDone): 
 			odoCycleCount += 1
 			
@@ -365,7 +404,7 @@ class DictionaryEngine:
 				print("Working, cycle limit percent consumed = %f" % pctDone)
 				ci += msgInterval
 
-		print("Cycles used = %d " % odoCycleCount)
+		print("Phrase List done, cycles used = %d " % odoCycleCount)
 	
 		# Process phrases through jumble evaluation 
 		print("Processing, letter combos count = %d " % len(phraseList))
@@ -396,6 +435,114 @@ class DictionaryEngine:
 		else:
 			for aMatch in matchList:
 				print(aMatch)
+			print("Match count = %d" % len(matchList))
+
+	def doWordle(self, includeList, requireList, omitList): 
+		# process Wordle using Odometer method.
+		
+		phraseList = []
+		
+		# generate odometer and odometer index, the odometer is an array of strings.
+		# windowSize is always 5 for Wordle, it is set in parseArgs when action = wordle 
+		odometer = self.generateOdometer(includeList, self.windowSize)
+		oIdx = []
+		for i in range(0,len(odometer)):
+			oIdx.append(i)
+		
+		# Generate Phrase List 
+		print("Building distinct potential jumble list...")
+		odoCycleCount = 0
+		
+		# set cycle limit to length of letter list factorial for windowsize range.
+		# e.g. letter list of 7, widow size 2 --> 7*6 (stop, aka given 7 letters there are 42 2 letter combos).
+
+		cycleLimit = len(includeList)
+		for x in range(len(includeList)-1,len(includeList)-self.windowSize,-1):
+			cycleLimit = cycleLimit * x
+			
+		msgInterval = cycleLimit * .1
+		ci = msgInterval
+		print("Cycle Limit set to %d msgInterval=%d" % (cycleLimit, ci))
+		bDone = False
+		print("Building potential wordle list...")
+		while(not bDone): 
+			odoCycleCount += 1
+			
+			phrase = self.readOdometer(odometer, oIdx)
+			sortedPhrase = self.doSortGen(phrase)
+
+			# check for requireList compatibility
+			bMissingRequiredLetter = False 
+			if (self.bHasRequireList): 
+				for rLet in requireList:
+					if(not self.isInArray(rLet, sortedPhrase)):
+						bMissingRequiredLetter = True
+						break 
+			
+			# check for omitList compatibility 
+			bUsingOmitLetter = False 
+			if (self.bHasOmitList): 
+				for oLet in omitList:
+					if(self.isInArray(oLet, sortedPhrase)):
+						bUsingOmitLetter = True
+						break 
+
+			if((phraseList.count(sortedPhrase) == 0)
+				and (not bMissingRequiredLetter)
+				and (not bUsingOmitLetter)):
+				phraseList.append(sortedPhrase) 
+			
+			# If at odometer is at max position mark as done, otherwise advance.
+			if (self.isOdometerAtMax(odometer,oIdx)):
+				# remove last item, it is all maxes.
+				del phraseList[len(phraseList)-1]
+				bDone = True
+			else:
+				self.advanceOdometer(odometer, oIdx)
+				
+			# Check governor for runaway process
+			if (odoCycleCount > cycleLimit):
+				print("doJumblePt2: Cycle limit governor hit.")
+				bDone = True
+				
+			if (odoCycleCount > ci):
+				pctDone = float(odoCycleCount)/float(cycleLimit)
+				print("Working, cycle limit percent consumed = %f" % pctDone)
+				ci += msgInterval
+
+		print("Potential world list done, cycles used = %d " % odoCycleCount)
+	
+		# Process phrases through jumble evaluation 
+		print("Processing, potential world list count = %d " % len(phraseList))
+		
+		# Walk the phrase list, finding jumble matches, adding them to 
+		#   the distinct match list.
+		matchList = []
+		loopCount = 0
+		phraseCount = len(phraseList)
+		msgInterval = phraseCount * .1
+		ci = msgInterval
+		for phrase in phraseList:
+			loopCount += 1
+			currentMatches = self.doSearch("jumble", phrase, True)
+			if (len(currentMatches) > 0):
+				for m in currentMatches:
+					if (matchList.count(m) == 0):
+						matchList.append(m)
+						
+			if (loopCount > ci):
+				print("Working, words processed = {0}".format(loopCount*1.0/phraseCount))
+				ci += msgInterval
+				
+		# end for phrase...
+		
+		if (len(matchList) == 0):
+			print("No matches found")
+		else:
+			print("Matching words:")
+			for aMatch in matchList:
+				matchParts = aMatch.split(',')
+				print(matchParts[0])
 			print("Match count = %d" % len(matchList))
 
 
@@ -548,5 +695,9 @@ class DictionaryEngine:
 		if (self.action == "jumblept2"):
 			self.doJumblePt2(self.targetPhrase, self.windowSize)
 
+		if (self.action == "wordle"): 
+			self.doWordle(self.includeList, self.requireList, self.omitList)
+
 		if (self.action == "maint"):
 			self.doMaint()
+			

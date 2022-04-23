@@ -1,0 +1,29 @@
+Call stack 
+	dict.py -> de.doAction() -> doWordle()
+	
+	Params for -action wordle: -include letterList -require letterList -omit letterList
+	
+	Test case 
+	-os mac -action wordle -include qweyiofgjklzxvb -require ive -omit rtupasdhcnm
+
+Run Output: 
+(shows bug, should not include words missing letters from require list)
+dict.py -os mac -action wordle -include qweyiofgjklzxvb -require ive -omit rtupasdhcnm
+
+bowie,5,ABCDE,beiow
+vowel,5,ABCDE,elovw
+bowel,5,ABCDE,below
+elbow,5,ABCDE,below
+below,5,ABCDE,below
+bogey,5,ABCDE,begoy
+yokel,5,ABCDE,ekloy
+ogive,5,ABCDE,egiov
+olive,5,ABCDE,eilov
+bilge,5,ABCDE,begil
+befog,5,ABCDE,befgo
+glove,5,ABCDE,eglov
+globe,5,ABCDE,beglo
+bloke,5,ABCDE,beklo
+Match count = 14
+
+Resolution: parseArgs() wasn't setting bHasOmitList and bHasRequireList 
