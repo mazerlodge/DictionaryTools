@@ -1,4 +1,5 @@
-#!/usr/bin/python
+# pylint: disable=superfluous-parens
+# pylint: disable=invalid-name
 
 # Version: 20170825-2015
 
@@ -57,40 +58,16 @@ class DictionaryEngine:
               + "\tNote: search for word or encword returns first match, "
               + "pattern returns all matches.\n")
 
-    def parseArgs(self, args):
-        # Parse the arguments looking for required parameters.
-        # Return false if any tests fail.
-
-        # global osType, action, searchType, targetPhrase
-
-        subtestResults = []
-        rval = True
-
-        # Instantiate the ArgParser
-        ap = ArgParser(args)
-
-        # check for optional debug flag
-        self.bInDebug = ap.isInArgs("-debug", False)
-
-        # check the OS type
+    def doOSCheck(self, ap):
         rv = False
         if (ap.isArgWithValue("-os", "mac")
            or ap.isArgWithValue("-os", "win")):
             self.osType = ap.getArgValue("-os")
             rv = True
-        subtestResults.append(rv)
 
-        # check for action
-        self.action = "NOT_SET"
-        rv = False
-        if (ap.isInArgs("-action", True)):
-            # action value must appear after target
-            self.action = ap.getArgValue("-action")
-            rv = True
-        subtestResults.append(rv)
+        return rv
 
-        # check for searchtype
-        # using a different arg parse approach than the OS check.
+    def doSearchTypeCheck(self, ap, subtestResults):
         if (self.action == "search"):
             rv = False
             if (ap.isInArgs("-searchtype", True)):
@@ -110,7 +87,7 @@ class DictionaryEngine:
                 rv = True
             subtestResults.append(rv)
 
-        # check for JumblePt2
+    def doJumblePt2Check(self, ap, subtestResults):
         if (self.action == "jumblept2"):
             rv = False
             if (ap.isInArgs("-windowsize", True)):
@@ -125,7 +102,7 @@ class DictionaryEngine:
                 rv = True
             subtestResults.append(rv)
 
-        # check for Wordle
+    def doWorldleCheck(self, ap, subtestResults):
         if (self.action == "wordle"):
             # widowSize is always 5 for Wordle
             self.windowSize = 5
@@ -133,7 +110,7 @@ class DictionaryEngine:
             rv = False
             if (ap.isInArgs("-include", True)):
                 self.includeList = ap.getArgValue("-include")
-                msg = "Inc List {0}".format(self.includeList)
+                msg = f"Inc List {self.includeList}"
                 print(msg)
                 rv = True
             subtestResults.append(rv)
@@ -155,6 +132,43 @@ class DictionaryEngine:
                 self.omitList = ap.getArgValue("-omit")
                 rv = True
             subtestResults.append(rv)
+
+    def parseArgs(self, args):
+        # Parse the arguments looking for required parameters.
+        # Return false if any tests fail.
+
+        # global osType, action, searchType, targetPhrase
+
+        subtestResults = []
+        rval = True
+
+        # Instantiate the ArgParser
+        ap = ArgParser(args)
+
+        # check for optional debug flag
+        self.bInDebug = ap.isInArgs("-debug", False)
+
+        # check the OS type
+        subtestResults.append(self.doOSCheck(ap))
+
+        # check for action
+        self.action = "NOT_SET"
+        rv = False
+        if (ap.isInArgs("-action", True)):
+            # action value must appear after target
+            self.action = ap.getArgValue("-action")
+            rv = True
+        subtestResults.append(rv)
+
+        # check for searchtype
+        # using a different arg parse approach than the OS check.
+        self.doSearchTypeCheck(ap, subtestResults)
+
+        # check for JumblePt2
+        self.doJumblePt2Check(ap, subtestResults)
+
+        # check for Wordle
+        self.doWorldleCheck(ap, subtestResults)
 
         # check for genmask
         if (self.action == "genmask"):
@@ -364,8 +378,7 @@ class DictionaryEngine:
 
         return rval
 
-    def doJumblePt2(self, letterList, windowSize):
-        # process Jumble Part 2 using Odometer method.
+    def buildPhraseListForJumble(self, letterList, windowSize):
 
         phraseList = []
 
@@ -421,6 +434,11 @@ class DictionaryEngine:
 
         print("Phrase List done, cycles used = %d " % odoCycleCount)
 
+    def doJumblePt2(self, letterList, windowSize):
+        # process Jumble Part 2 using Odometer method.
+
+        phraseList = self.buildPhraseListForJumble(letterList, windowSize)
+
         # Process phrases through jumble evaluation
         print("Processing, letter combos count = %d " % len(phraseList))
 
@@ -453,8 +471,7 @@ class DictionaryEngine:
                 print(aMatch)
             print("Match count = %d" % len(matchList))
 
-    def doWordle(self, includeList, requireList, omitList):
-        # process Wordle using Odometer method.
+    def buildPhraseListForWordle(self, includeList, requireList, omitList):
 
         phraseList = []
 
@@ -528,6 +545,15 @@ class DictionaryEngine:
                 ci += msgInterval
 
         print("Potential world list done, cycles used = %d " % odoCycleCount)
+
+        return phraseList
+
+    def doWordle(self, includeList, requireList, omitList):
+        # process Wordle using Odometer method.
+
+        phraseList = self.buildPhraseListForWordle(includeList,
+                                                  requireList,
+                                                  omitList)
 
         # Process phrases through jumble evaluation
         print("Processing, potential world list count = %d " % len(phraseList))
