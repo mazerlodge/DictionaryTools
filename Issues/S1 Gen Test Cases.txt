@@ -1,0 +1,23 @@
+Init failed in argument parser.
+Usage: python dict.py -os [mac | win] -action [search | genmask | jumblept2 | maint ] {-debug}
+About searches: find a word, pattern (like ABBC), substitution encoded word (like GBRRCB),
+ or jumbled word (like ISFH, returns fish).
+	Params for -action search: -searchtype [word | pattern | encword | jumble] -target targetPhrase
+	Params for -action jumblept2: -target letterList -windowsize n
+	Params for -action genmask: -target targetPhrase
+	Params for -action maint: -mainttype [ gensortcolumn | addword ] -target word_to_add
+ 	Params for -action wordle: -include letterList -require letterList -omit letterList
+ 		Note: For -action wordle, include list must contain all letters in the require list.
+ 	Note: search for word or encword returns first match, pattern returns all matches.
+
+dict.py -os mac -action search -searchtype word -target olive
+	Result: Failed to return word or any feedback, works with -debug option
+
+dict.py -os mac -action search -searchtype encword -target airfare -debug | more
+dict.py -os mac -action search -searchtype pattern -target ABCDACE -debug
+dict.py -os mac -action search -searchtype jumble -target fareair
+dict.py -os mac -action genmask -target airfare
+dict.py -os mac -action jumblept2 -target snare -windowsize 3
+dict.py -os mac -action maint -mainttype gensortcolumn -target ::WORD_TO_ADD::
+dict.py -os mac -action maint -mainttype  addword -target ::WORD_TO_ADD::
+dict.py -os mac -action wordle -os mac -action wordle -include qweyiofgjklzxvb -require ive -omit rtupasdhcnm
