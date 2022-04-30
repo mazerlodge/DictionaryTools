@@ -7,23 +7,24 @@ Call stack
 	-os mac -action wordle -include qweyiofgjklzxvb -require ive -omit rtupasdhcnm
 
 Run Output: 
-(shows bug, should not include words missing letters from require list)
-dict.py -os mac -action wordle -include qweyiofgjklzxvb -require ive -omit rtupasdhcnm
-
-bowie,5,ABCDE,beiow
-vowel,5,ABCDE,elovw
-bowel,5,ABCDE,below
-elbow,5,ABCDE,below
-below,5,ABCDE,below
-bogey,5,ABCDE,begoy
-yokel,5,ABCDE,ekloy
-ogive,5,ABCDE,egiov
-olive,5,ABCDE,eilov
-bilge,5,ABCDE,begil
-befog,5,ABCDE,befgo
-glove,5,ABCDE,eglov
-globe,5,ABCDE,beglo
-bloke,5,ABCDE,beklo
-Match count = 14
-
-Resolution: parseArgs() wasn't setting bHasOmitList and bHasRequireList 
+dict.py -os mac -action wordle -os mac -action wordle -include qweyiofgjklzxvb -require ive -omit rtupasdhcnm
+Inc List qweyiofgjklzxvb
+Req List ive
+Building distinct potential jumble list...
+Cycle Limit set to 360360 msgInterval=36036
+Building potential wordle list...
+Potential world list done, cycles used = 3004 
+Processing, potential world list count = 65 
+Working, words processed = 0.1076923076923077
+Working, words processed = 0.2153846153846154
+Working, words processed = 0.3076923076923077
+Working, words processed = 0.4153846153846154
+Working, words processed = 0.5076923076923077
+Working, words processed = 0.6153846153846154
+Working, words processed = 0.7076923076923077
+Working, words processed = 0.8153846153846154
+Working, words processed = 0.9076923076923077
+Matching words:
+ogive
+olive
+Match count = 2

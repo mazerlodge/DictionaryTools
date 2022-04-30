@@ -14,10 +14,25 @@ dict.py -os mac -action search -searchtype word -target olive
 	Result: Failed to return word or any feedback, works with -debug option
 
 dict.py -os mac -action search -searchtype encword -target airfare -debug | more
-dict.py -os mac -action search -searchtype pattern -target ABCDACE -debug
-dict.py -os mac -action search -searchtype jumble -target fareair
+	- Test OK
+	
 dict.py -os mac -action genmask -target airfare
+	- Test OK
+
+dict.py -os mac -action search -searchtype pattern -target ABCDACE -debug
+	- Test OK 
+	
+dict.py -os mac -action search -searchtype jumble -target fareair
+	- Test OK
+
 dict.py -os mac -action jumblept2 -target snare -windowsize 3
-dict.py -os mac -action maint -mainttype gensortcolumn -target ::WORD_TO_ADD::
-dict.py -os mac -action maint -mainttype  addword -target ::WORD_TO_ADD::
+	- Test OK
+
 dict.py -os mac -action wordle -os mac -action wordle -include qweyiofgjklzxvb -require ive -omit rtupasdhcnm
+	- Test OK
+	
+dict.py -os mac -action maint -mainttype gensortcolumn -target ::WORD_TO_ADD::
+
+dict.py -os mac -action maint -mainttype  addword -target ::WORD_TO_ADD::
+
+

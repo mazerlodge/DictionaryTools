@@ -453,7 +453,7 @@ class DictionaryEngine:
 		phraseList = self.buildPhraseListForJumble(letterList, windowSize)
 
 		# Process phrases through jumble evaluation
-		print("Processing, letter combos count = %d " % len(phraseList))
+		DictionaryEngine.showMsg("Processing, letter combos count = %d " % len(phraseList))
 
 		# Walk the phrase list, finding jumble matches, adding them to
 		#   the distinct match list.
@@ -477,12 +477,8 @@ class DictionaryEngine:
 
 		# end for phrase...
 
-		if (len(matchList) == 0):
-			print("No matches found")
-		else:
-			for aMatch in matchList:
-				print(aMatch)
-			print("Match count = %d" % len(matchList))
+		# show results
+		self.showMatchList(matchList)
 
 	def buildPhraseListForWordle(self, includeList, requireList, omitList):
 
@@ -592,7 +588,12 @@ class DictionaryEngine:
 				ci += msgInterval
 
 		# end for phrase...
+		
+		# output just word part of matching dictionary entry
+		self.showMatchList(matchList)
 
+	def showMatchList(self, matchList): 
+	
 		if (len(matchList) == 0):
 			print("No matches found")
 		else:
@@ -654,7 +655,7 @@ class DictionaryEngine:
 				# word is in part 0
 				currentWord = parts[idx].strip()
 				if(word2find.lower() == currentWord.lower()):
-					DictionaryEngine.showMsg(line.strip())
+					self.showDebugMsg(line.strip())
 					rval.append(line.strip())
 					bFound = True
 
@@ -666,7 +667,7 @@ class DictionaryEngine:
 
 			# Output not found results
 			if (not bFound):
-				DictionaryEngine.showMsg("%r not found" % word2find)
+				self.showDebugMsg("%r not found" % word2find)
 
 		return rval
 
@@ -753,7 +754,8 @@ class DictionaryEngine:
 
 		# determine which action to execute
 		if (self.action == "search"):
-			self.doSearch(self.searchType, self.targetPhrase)
+			searchResults = self.doSearch(self.searchType, self.targetPhrase)
+			self.showMatchList(searchResults)	
 
 		if (self.action == "genmask"):
 			self.doMaskGen(self.targetPhrase)
