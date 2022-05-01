@@ -1,0 +1,20 @@
+S1 Issue - Worldle fails to find FORGO 20220501-1129.txt
+
+Issue - Search using the command line below fails to find FORGO (is in dictionary). 
+
+# Prove target word FORGO is in dictionary
+dict.py -os mac -action search -searchtype word -target forgo
+Matching words:
+forgo
+Match count = 1
+
+# Wordle Fails
+dict.py -os mac -action wordle -os mac -action wordle -include qrosdfghjkzxv -require org -omit wetyuipaslcbnm
+
+# Wordle Succeeds 
+dict.py -os mac -action wordle -os mac -action wordle -include qrosdfghjkzxvo -require org -omit wetyuipaslcbnm
+
+Diagnostic
+------------
+Fails b/c double letter 'o', only one copy is provided in failing invocation. 
+
