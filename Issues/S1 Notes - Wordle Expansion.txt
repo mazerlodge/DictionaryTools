@@ -5,6 +5,11 @@ Call stack
 	
 	Test case 
 	-os mac -action wordle -include qweyiofgjklzxvb -require ive -omit rtupasdhcnm
+	
+	Test case for adding -mask option
+	dict.py -os mac -action wordle -include qwertyupdghjkzxcbm -require ert -omit ioasflvn -mask ..e.t
+		N-- this should return "crept"
+		N-- alt approach, pipe output to bbedit and do find w/ "e.t\n" and regex matching turned on. 
 
 Run Output: 
 dict.py -os mac -action wordle -os mac -action wordle -include qweyiofgjklzxvb -require ive -omit rtupasdhcnm

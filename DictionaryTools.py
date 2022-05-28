@@ -11,6 +11,8 @@
 # pylint: disable=too-many-branches
 # pylint: disable=consider-using-f-string
 # pylint: disable=consider-using-enumerate
+# pylint: disable=trailing-whitespace
+# pylint: disable=too-many-nested-blocks
 
 # Version: 20170825-2015
 
@@ -30,6 +32,7 @@ class DictionaryEngine:
 	bInDebug = False
 	bHasRequireList = False
 	bHasOmitList = False
+	bHasMask = False
 	osType = "NOT_SET"
 	maintType = "NOT_SET"
 	searchType = "NOT_SET"
@@ -39,6 +42,7 @@ class DictionaryEngine:
 	includeList = "NOT_SET"
 	requireList = "NOT_SET"
 	omitList = "NOT_SET"
+	mask= "NOT_SET"
 	action = "NOT_SET"
 	lines = []
 	windowSize = -1
@@ -63,8 +67,8 @@ class DictionaryEngine:
 			  + "\tParams for -action genmask: -target targetPhrase \n"
 			  + "\tParams for -action maint: -mainttype [ gensortcolumn | "
 			  + "addword ] -target word_to_add \n "
-			  + "\tParams for -action wordle: -include letterList -require "
-			  + "letterList -omit letterList\n "
+			  + "\tParams for -action wordle: -include letterList {-require "
+			  + "letterList} {-omit letterList} {-mask ..a.b}\n "
 			  + "\t\tNote: For -action wordle, include list must contain all "
 			  + "letters in the require list.\n "
 			  + "\tNote: search for word or encword returns first match, "
@@ -142,6 +146,14 @@ class DictionaryEngine:
 			if (ap.isInArgs("-omit", True)):
 				self.bHasOmitList = True
 				self.omitList = ap.getArgValue("-omit")
+				rv = True
+			subtestResults.append(rv)
+
+			# Wordle also may optionally have a mask
+			rv = True  # not a required parameter
+			if (ap.isInArgs("-mask", True)):
+				self.bHasMask = True
+				self.mask = ap.getArgValue("-mask")
 				rv = True
 			subtestResults.append(rv)
 
@@ -557,7 +569,7 @@ class DictionaryEngine:
 
 		return phraseList
 
-	def doWordle(self, includeList, requireList, omitList):
+	def doWordle(self, includeList, requireList, omitList, mask):
 		# process Wordle using Odometer method.
 
 		phraseList = self.buildPhraseListForWordle(includeList,
@@ -579,7 +591,19 @@ class DictionaryEngine:
 			currentMatches = self.doSearch("jumble", phrase)
 			if (len(currentMatches) > 0):
 				for m in currentMatches:
-					if (matchList.count(m) == 0):
+					# check for mask compatibility
+					idx = 0
+					bFailMaskCheck = False
+					if (self.bHasMask): 
+						# mask like ..e.t
+						matchParts = m.split(',')
+						for aLet in mask:
+							if(aLet not in (".", matchParts[0][idx])):
+								bFailMaskCheck = True
+								break
+							idx += 1
+
+					if ((matchList.count(m) == 0) and (not bFailMaskCheck)):
 						matchList.append(m)
 
 			if (loopCount > ci):
@@ -595,13 +619,13 @@ class DictionaryEngine:
 	def showMatchList(self, matchList): 
 	
 		if (len(matchList) == 0):
-			print("No matches found")
+			self.showMsg("No matches found")
 		else:
-			print("Matching words:")
+			self.showMsg("Matching words:")
 			for aMatch in matchList:
 				matchParts = aMatch.split(',')
 				print(matchParts[0])
-			print("Match count = %d" % len(matchList))
+			self.showMsg("Match count = %d" % len(matchList))
 
 	@staticmethod
 	def showMsg(msg):
@@ -685,9 +709,8 @@ class DictionaryEngine:
 
 		# populate pattern letters array
 		currASCIIVal = 65
-		for x in range(0, len(distinctPhraseLetters)):
+		for currASCIIVal in range(65, 65+len(distinctPhraseLetters)):
 			patternLetters.append(chr(currASCIIVal))
-			currASCIIVal += 1
 
 		# generate mask
 		for tpl in rawPhrase:
@@ -764,7 +787,8 @@ class DictionaryEngine:
 			self.doJumblePt2(self.targetPhrase, self.windowSize)
 
 		if (self.action == "wordle"):
-			self.doWordle(self.includeList, self.requireList, self.omitList)
+			self.doWordle(self.includeList, self.requireList, 
+							self.omitList, self.mask)
 
 		if (self.action == "maint"):
 			self.doMaint()

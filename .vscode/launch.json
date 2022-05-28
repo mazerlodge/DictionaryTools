@@ -31,11 +31,26 @@
 			"console": "integratedTerminal",
 			"args": ["-os", "mac", 
 					 "-action", "wordle", 
-					 "-include", "qweyiofgjklzxvb", 
-					 "-require", "ive", 
-					 "-omit", "rtupasdhcnm",
+					 "-include", "qwertyupdghjkzxcbm", 
+					 "-require", "ert", 
+					 "-omit", "ioasflvn",
+					 "-mask", "..e.t",
+					 "-nodebug"]
+		},
+
+		{
+			"name": "Search EncWord Test",
+			"type": "python",
+			"request": "launch",
+			"program": "dict.py",
+			"console": "integratedTerminal",
+			"args": ["-os", "mac", 
+					 "-action", "search", 
+					 "-searchtype", "encword", 
+					 "-target", "gbrrch",
 					 "-nodebug"]
 		}
+
 
 	]
 }
