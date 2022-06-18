@@ -84,7 +84,7 @@ class DictionaryEngine:
 
 		return rv
 
-	def doSearchTypeCheck(self, ap, subtestResults):
+	def doSearchTypeCheck(self, ap, subtestResults, subtestResultMessages):
 		if (self.action == "search"):
 			rv = False
 			if (ap.isInArgs("-searchtype", True)):
@@ -95,31 +95,35 @@ class DictionaryEngine:
 					if (st == vst):
 						self.searchType = st
 						rv = True
-			subtestResults.append("-searchtype %s" % rv)
+			subtestResultMessages.append("-searchtype %s" % rv)
+			subtestResults.append(rv)
 
 			# search also requires a target
 			rv = False
 			if (ap.isInArgs("-target", True)):
 				self.targetPhrase = ap.getArgValue("-target")
 				rv = True
-			subtestResults.append("-target %s" % rv)
+			subtestResultMessages.append("-target %s" % rv)
+			subtestResults.append(rv)
 
-	def doJumblePt2Check(self, ap, subtestResults):
+	def doJumblePt2Check(self, ap, subtestResults, subtestResultMessages):
 		if (self.action == "jumblept2"):
 			rv = False
 			if (ap.isInArgs("-windowsize", True)):
 				self.windowSize = int(ap.getArgValue("-windowsize"))
 				rv = True
-			subtestResults.append("-jumblept2 %s" % rv)
+			subtestResultMessages.append("-jumblept2 %s" % rv)
+			subtestResults.append(rv)
 
 			# JumblePt2 also requires a target
 			rv = False
 			if (ap.isInArgs("-target", True)):
 				self.targetPhrase = ap.getArgValue("-target")
 				rv = True
-			subtestResults.append("-target %s" % rv)
+			subtestResultMessagess.append("-target %s" % rv)
+			subtestResults.append(rv)
 
-	def doWorldleCheck(self, ap, subtestResults):
+	def doWorldleCheck(self, ap, subtestResults, subtestResultMessages):
 		if (self.action == "wordle"):
 			# widowSize is always 5 for Wordle
 			self.windowSize = 5
@@ -130,7 +134,8 @@ class DictionaryEngine:
 				msg = f"Inc List {self.includeList}"
 				print(msg)
 				rv = True
-			subtestResults.append("-include %s" % rv)
+			subtestResultMessages.append("-include %s" % rv)
+			subtestResults.append(rv)
 
 			# Wordle also may optionally have a require list
 			rv = True  # not a required parameter
@@ -140,7 +145,8 @@ class DictionaryEngine:
 				msg = "Req List {0}".format(self.requireList)
 				print(msg)
 				rv = True
-			subtestResults.append("-require %s" % rv)
+			subtestResultMessages.append("-require %s" % rv)
+			subtestResults.append(rv)
 
 			# Wordle also may optionally have a omit list
 			rv = True  # not a required parameter
@@ -148,7 +154,8 @@ class DictionaryEngine:
 				self.bHasOmitList = True
 				self.omitList = ap.getArgValue("-omit")
 				rv = True
-			subtestResults.append("-omit %s" % rv)
+			subtestResultMessages.append("-omit %s" % rv)
+			subtestResults.append(rv)
 
 			# Wordle also may optionally have a mask
 			rv = True  # not a required parameter
@@ -156,7 +163,8 @@ class DictionaryEngine:
 				self.bHasMask = True
 				self.mask = ap.getArgValue("-mask")
 				rv = True
-			subtestResults.append("-mask %s" % rv)
+			subtestResultMessages.append("-mask %s" % rv)
+			subtestResults.append(rv)
 
 	def parseArgs(self, args):
 		# Parse the arguments looking for required parameters.
@@ -165,6 +173,7 @@ class DictionaryEngine:
 		# global osType, action, searchType, targetPhrase
 
 		subtestResults = []
+		subtestResultMessages = []
 		rval = True
 
 		# Instantiate the ArgParser
@@ -174,7 +183,8 @@ class DictionaryEngine:
 		self.bInDebug = ap.isInArgs("-debug", False)
 
 		# check the OS type
-		subtestResults.append("-os %s" % self.doOSCheck(ap))
+		subtestResultMessages.append("-os %s" % self.doOSCheck(ap))
+		subtestResults.append(self.doOSCheck(ap))
 
 		# check for action
 		self.action = "NOT_SET"
@@ -183,17 +193,18 @@ class DictionaryEngine:
 			# action value must appear after target
 			self.action = ap.getArgValue("-action")
 			rv = True
-		subtestResults.append("-action %s" % rv)
+		subtestResultMessages.append("-action %s" % rv)
+		subtestResults.append(rv)
 
 		# check for searchtype
 		# using a different arg parse approach than the OS check.
-		self.doSearchTypeCheck(ap, subtestResults)
+		self.doSearchTypeCheck(ap, subtestResults, subtestResultMessages)
 
 		# check for JumblePt2
-		self.doJumblePt2Check(ap, subtestResults)
+		self.doJumblePt2Check(ap, subtestResults, subtestResultMessages)
 
 		# check for Wordle
-		self.doWorldleCheck(ap, subtestResults)
+		self.doWorldleCheck(ap, subtestResults, subtestResultMessages)
 
 		# check for genmask
 		if (self.action == "genmask"):
@@ -202,7 +213,8 @@ class DictionaryEngine:
 			if (ap.isInArgs("-target", True)):
 				self.targetPhrase = ap.getArgValue("-target")
 				rv = True
-			subtestResults.append("-genmask %s" % rv)
+			subtestResultMessages.append("-genmask %s" % rv)
+			subtestResults.append(rv)
 
 		# check for maintenance
 		if (self.action == "maint"):
@@ -217,13 +229,27 @@ class DictionaryEngine:
 				# no additional checks for adding sort column
 				if (self.maintType == "gensortcolumn"):
 					rv = True
-			subtestResults.append("-mainttype %s" % rv)
+			subtestResultMessages.append("-mainttype %s" % rv)
+			subtestResults.append(rv)
+
+		if (self.action == "addword"):
+			rv = False
+			if (ap.isInArgs("-target", True)):
+				self.targetPhrase = ap.getArgValue("-target")
+				rv = True
+			else:
+				rv = False
+
+			subtestResultMessages.append("-addword %s" % rv)
+			subtestResults.append(rv)
 
 		# Determine if all subtests passed
-		for aSubResult in subtestResults:
+		for aMsg in subtestResultMessages:
 			if (self.bInDebug):
-				msg = "Arg subtest {0}".format(aSubResult)
+				msg = "Arg subtest {0}".format(aMsg)
 				print(msg)
+
+		for aSubResult in subtestResults:
 			rval = rval and aSubResult
 
 		return(rval)
@@ -793,4 +819,8 @@ class DictionaryEngine:
 							self.omitList, self.mask)
 
 		if (self.action == "maint"):
+			self.doMaint()
+
+		if (self.action == "addword"):
+			self.maintType = "addword"
 			self.doMaint()

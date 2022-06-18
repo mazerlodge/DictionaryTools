@@ -23,6 +23,8 @@ About searches:
     Params for -action maint:
       -mainttype [ gensortcolumn | addword ]
       -target word_to_add
+    Params for -action addword:
+      -target word_to_add
     Params for -action wordle:
       -include letterList
       -require letterList
