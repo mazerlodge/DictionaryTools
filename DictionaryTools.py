@@ -14,6 +14,7 @@
 # pylint: disable=trailing-whitespace
 # pylint: disable=too-many-nested-blocks
 
+
 # Version: 20170825-2015
 
 from ArgTools import ArgParser
@@ -42,7 +43,7 @@ class DictionaryEngine:
 	includeList = "NOT_SET"
 	requireList = "NOT_SET"
 	omitList = "NOT_SET"
-	mask= "NOT_SET"
+	mask = "NOT_SET"
 	action = "NOT_SET"
 	lines = []
 	windowSize = -1
@@ -94,14 +95,14 @@ class DictionaryEngine:
 					if (st == vst):
 						self.searchType = st
 						rv = True
-			subtestResults.append(rv)
+			subtestResults.append("-searchtype %s" % rv)
 
 			# search also requires a target
 			rv = False
 			if (ap.isInArgs("-target", True)):
 				self.targetPhrase = ap.getArgValue("-target")
 				rv = True
-			subtestResults.append(rv)
+			subtestResults.append("-target %s" % rv)
 
 	def doJumblePt2Check(self, ap, subtestResults):
 		if (self.action == "jumblept2"):
@@ -109,14 +110,14 @@ class DictionaryEngine:
 			if (ap.isInArgs("-windowsize", True)):
 				self.windowSize = int(ap.getArgValue("-windowsize"))
 				rv = True
-			subtestResults.append(rv)
+			subtestResults.append("-jumblept2 %s" % rv)
 
 			# JumblePt2 also requires a target
 			rv = False
 			if (ap.isInArgs("-target", True)):
 				self.targetPhrase = ap.getArgValue("-target")
 				rv = True
-			subtestResults.append(rv)
+			subtestResults.append("-target %s" % rv)
 
 	def doWorldleCheck(self, ap, subtestResults):
 		if (self.action == "wordle"):
@@ -129,7 +130,7 @@ class DictionaryEngine:
 				msg = f"Inc List {self.includeList}"
 				print(msg)
 				rv = True
-			subtestResults.append(rv)
+			subtestResults.append("-include %s" % rv)
 
 			# Wordle also may optionally have a require list
 			rv = True  # not a required parameter
@@ -139,7 +140,7 @@ class DictionaryEngine:
 				msg = "Req List {0}".format(self.requireList)
 				print(msg)
 				rv = True
-			subtestResults.append(rv)
+			subtestResults.append("-require %s" % rv)
 
 			# Wordle also may optionally have a omit list
 			rv = True  # not a required parameter
@@ -147,7 +148,7 @@ class DictionaryEngine:
 				self.bHasOmitList = True
 				self.omitList = ap.getArgValue("-omit")
 				rv = True
-			subtestResults.append(rv)
+			subtestResults.append("-omit %s" % rv)
 
 			# Wordle also may optionally have a mask
 			rv = True  # not a required parameter
@@ -155,7 +156,7 @@ class DictionaryEngine:
 				self.bHasMask = True
 				self.mask = ap.getArgValue("-mask")
 				rv = True
-			subtestResults.append(rv)
+			subtestResults.append("-mask %s" % rv)
 
 	def parseArgs(self, args):
 		# Parse the arguments looking for required parameters.
@@ -173,7 +174,7 @@ class DictionaryEngine:
 		self.bInDebug = ap.isInArgs("-debug", False)
 
 		# check the OS type
-		subtestResults.append(self.doOSCheck(ap))
+		subtestResults.append("-os %s" % self.doOSCheck(ap))
 
 		# check for action
 		self.action = "NOT_SET"
@@ -182,7 +183,7 @@ class DictionaryEngine:
 			# action value must appear after target
 			self.action = ap.getArgValue("-action")
 			rv = True
-		subtestResults.append(rv)
+		subtestResults.append("-action %s" % rv)
 
 		# check for searchtype
 		# using a different arg parse approach than the OS check.
@@ -201,7 +202,7 @@ class DictionaryEngine:
 			if (ap.isInArgs("-target", True)):
 				self.targetPhrase = ap.getArgValue("-target")
 				rv = True
-			subtestResults.append(rv)
+			subtestResults.append("-genmask %s" % rv)
 
 		# check for maintenance
 		if (self.action == "maint"):
@@ -216,7 +217,7 @@ class DictionaryEngine:
 				# no additional checks for adding sort column
 				if (self.maintType == "gensortcolumn"):
 					rv = True
-			subtestResults.append(rv)
+			subtestResults.append("-mainttype %s" % rv)
 
 		# Determine if all subtests passed
 		for aSubResult in subtestResults:
@@ -465,7 +466,8 @@ class DictionaryEngine:
 		phraseList = self.buildPhraseListForJumble(letterList, windowSize)
 
 		# Process phrases through jumble evaluation
-		DictionaryEngine.showMsg("Processing, letter combos count = %d " % len(phraseList))
+		DictionaryEngine.showMsg(
+			"Processing, letter combos count = %d " % len(phraseList))
 
 		# Walk the phrase list, finding jumble matches, adding them to
 		#   the distinct match list.
@@ -594,7 +596,7 @@ class DictionaryEngine:
 					# check for mask compatibility
 					idx = 0
 					bFailMaskCheck = False
-					if (self.bHasMask): 
+					if (self.bHasMask):
 						# mask like ..e.t
 						matchParts = m.split(',')
 						for aLet in mask:
@@ -612,12 +614,12 @@ class DictionaryEngine:
 				ci += msgInterval
 
 		# end for phrase...
-		
+
 		# output just word part of matching dictionary entry
 		self.showMatchList(matchList)
 
-	def showMatchList(self, matchList): 
-	
+	def showMatchList(self, matchList):
+
 		if (len(matchList) == 0):
 			self.showMsg("No matches found")
 		else:
@@ -778,7 +780,7 @@ class DictionaryEngine:
 		# determine which action to execute
 		if (self.action == "search"):
 			searchResults = self.doSearch(self.searchType, self.targetPhrase)
-			self.showMatchList(searchResults)	
+			self.showMatchList(searchResults)
 
 		if (self.action == "genmask"):
 			self.doMaskGen(self.targetPhrase)
@@ -787,7 +789,7 @@ class DictionaryEngine:
 			self.doJumblePt2(self.targetPhrase, self.windowSize)
 
 		if (self.action == "wordle"):
-			self.doWordle(self.includeList, self.requireList, 
+			self.doWordle(self.includeList, self.requireList,
 							self.omitList, self.mask)
 
 		if (self.action == "maint"):
