@@ -40,6 +40,7 @@ import sys
 from DictionaryTools import DictionaryEngine
 
 # ### EXECUTION Starts Here ###
+print(sys.argv)
 
 de = DictionaryEngine(sys.argv)
 

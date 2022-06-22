@@ -1,0 +1,33 @@
+S1 Issue - Cacao Search 20220618-2358.txt
+
+-- This throws an error
+TheoVI:~ $ wordle.sh -include qwypafgjlzxcv -omit ertuisdhkbnm -require aco
+Inc List qwypafgjlzxcv
+Req List aco
+Building distinct potential jumble list...
+Cycle Limit set to 154440 msgInterval=15444
+Building potential wordle list...
+Traceback (most recent call last):
+  File "/Users/mazerlodge/QTools/dict.py", line 50, in <module>
+    de.doAction()
+  File "/Users/mazerlodge/Documents/XProjects/Python/DictionaryTools/DictionaryTools.py", line 818, in doAction
+    self.doWordle(self.includeList, self.requireList,
+  File "/Users/mazerlodge/Documents/XProjects/Python/DictionaryTools/DictionaryTools.py", line 603, in doWordle
+    phraseList = self.buildPhraseListForWordle(includeList,
+  File "/Users/mazerlodge/Documents/XProjects/Python/DictionaryTools/DictionaryTools.py", line 581, in buildPhraseListForWordle
+    del phraseList[len(phraseList)-1]
+IndexError: list assignment index out of range
+TheoVI:~ $ wordle.sh -include qwyopafgjlzxcv -omit ertuisdhkbnm -require aco -mask .ac..
+Inc List qwyopafgjlzxcv
+Req List aco
+Building distinct potential jumble list...
+Cycle Limit set to 240240 msgInterval=24024
+
+-- This works 
+wordle.sh -include caqwyopafgjlzxcv -omit ertuisdhkbnm -require aco -mask .ac..
+Matching words:
+cacao
+Match count = 1
+
+-- But if dupe ca is at the end of the include list it fails: 
+wordle.sh -include qwyopafgjlzxcvca -omit ertuisdhkbnm -require aco -mask .ac..
