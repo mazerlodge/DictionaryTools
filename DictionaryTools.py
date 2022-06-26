@@ -23,8 +23,8 @@ from ArgTools import ArgParser
 class DictionaryEngine:
 
 	# Hard coded constants
-	DICTIONARY_FILE__MAC = "/Users/mazerlodge/Documents/XProjects/ObjectiveC/"\
-						   + "Skylar/Dictionaries/DictionaryPatterns.csv"
+	DICTIONARY_FILE__MAC = "/Users/mazerlodge/Documents/XProjects/Python/"\
+						   + "DictionaryTools/Data/DictionaryPatterns.csv"
 	DICTIONARY_FILE__WIN = "C:\\pmsoren\\_PT\\pyproj\\DictionaryTools\\Data"\
             + "\\DictionaryPatterns.csv"
 
