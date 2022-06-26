@@ -120,7 +120,7 @@ class DictionaryEngine:
 			if (ap.isInArgs("-target", True)):
 				self.targetPhrase = ap.getArgValue("-target")
 				rv = True
-			subtestResultMessagess.append("-target %s" % rv)
+			subtestResultMessages.append("-target %s" % rv)
 			subtestResults.append(rv)
 
 	def doWorldleCheck(self, ap, subtestResults, subtestResultMessages):
