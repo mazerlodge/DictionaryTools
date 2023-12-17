@@ -1,0 +1,38 @@
+S1 Issue - Wordle failed to find BACON 20231217
+
+Issue - Following search fails: 
+		./wordle.sh -include bacndioeu -require ac -omit slediuk -mask .ac..
+
+		But this search succeeds: 
+		./wordle.sh -include bacndioeux -require ac -omit slediuk -mask .ac..
+
+
+Sample interaction:
+---------------------
+TheoVI:QTools $ ./wordle.sh -include bacndioeu -require ac -omit slediuk -mask .ac..
+['/Users/mazerlodge/QTools/dict.py', '-os', 'mac', '-action', 'wordle', '-include', 'bacndioeu', '-require', 'ac', '-omit', 'slediuk', '-mask', '.ac..']
+Inc List bacndioeu
+Req List ac
+Building distinct potential jumble list...
+Cycle Limit set to 15120 msgInterval=1512
+Building potential wordle list...
+Potential word list done, cycles used = 127 
+Processing, potential word list count = 0 
+No matches found
+TheoVI:QTools $ ./wordle.sh -include bacndioeux -require ac -omit slediuk -mask .ac..
+['/Users/mazerlodge/QTools/dict.py', '-os', 'mac', '-action', 'wordle', '-include', 'bacndioeux', '-require', 'ac', '-omit', 'slediuk', '-mask', '.ac..']
+Inc List bacndioeux
+Req List ac
+Building distinct potential jumble list...
+Cycle Limit set to 30240 msgInterval=3024
+Building potential wordle list...
+Potential word list done, cycles used = 253 
+Processing, potential word list count = 3 
+Working, words processed = 0.3333333333333333
+Working, words processed = 0.6666666666666666
+Working, words processed = 1.0
+Matching words:
+bacon
+Match count = 1
+TheoVI:QTools $ 
+
