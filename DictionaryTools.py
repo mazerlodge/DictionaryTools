@@ -593,7 +593,7 @@ class DictionaryEngine:
 				print("Working, cycle limit percent consumed = %f" % pctDone)
 				ci += msgInterval
 
-		print("Potential world list done, cycles used = %d " % odoCycleCount)
+		print("Potential word list done, cycles used = %d " % odoCycleCount)
 
 		return phraseList
 
@@ -605,7 +605,7 @@ class DictionaryEngine:
 												  omitList)
 
 		# Process phrases through jumble evaluation
-		print("Processing, potential world list count = %d " % len(phraseList))
+		print("Processing, potential word list count = %d " % len(phraseList))
 
 		# Walk the phrase list, finding jumble matches, adding them to
 		#   the distinct match list.
