@@ -578,14 +578,17 @@ class DictionaryEngine:
 			# If at odometer is at max position mark as done, else advance.
 			if (self.isOdometerAtMax(odometer, oIdx)):
 				# remove last item, it is all maxes.
-				del phraseList[len(phraseList)-1]
+				print("DictionaryTools.buildPhraseListForWorlde: Odometer is at Max, removing last item.")
+				print(f"index targeted = %d  phraseList size = %d"%(len(phraseList)-1, len(phraseList)))
+				if (len(phraseList) > 0):
+					del phraseList[len(phraseList)-1]
 				bDone = True
 			else:
 				self.advanceOdometer(odometer, oIdx)
 
 			# Check governor for runaway process
 			if (odoCycleCount > cycleLimit):
-				print("doJumblePt2: Cycle limit governor hit.")
+				print("DictionaryTools.buildPhraseListForWorlde: Cycle limit governor hit.")
 				bDone = True
 
 			if (odoCycleCount > ci):

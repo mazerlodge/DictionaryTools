@@ -1,6 +1,6 @@
 S1 Issue - Cacao Search 20220618-2358.txt
 
--- This throws an error
+-- This throws an error [CALL #1]
 TheoVI:~ $ wordle.sh -include qwypafgjlzxcv -omit ertuisdhkbnm -require aco
 Inc List qwypafgjlzxcv
 Req List aco
@@ -23,7 +23,7 @@ Req List aco
 Building distinct potential jumble list...
 Cycle Limit set to 240240 msgInterval=24024
 
--- This works 
+-- This works [CALL #2]
 wordle.sh -include caqwyopafgjlzxcv -omit ertuisdhkbnm -require aco -mask .ac..
 Matching words:
 cacao
@@ -31,3 +31,7 @@ Match count = 1
 
 -- But if dupe ca is at the end of the include list it fails: 
 wordle.sh -include qwyopafgjlzxcvca -omit ertuisdhkbnm -require aco -mask .ac..
+
+
+20240907-0946 - Updated code to prevent error, but still isn't finding match with call #1
+	Theory: Not getting all wheel combinations, faulty odometer? 
