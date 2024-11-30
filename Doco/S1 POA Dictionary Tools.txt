@@ -1,0 +1,16 @@
+S1 POA Dictionary Tools 
+
+> History
+	=== 2024 ====
+	1130 
+	- Init this file
+	- Make a Wordle S1 POA file and add items from 2023 list 0727
+
+> Next 
+
+
+> Backlog
+	- Make wordle.py easier to use (infer the -include letter list when -omit is provided) 1217
+	- Fix wordle.py issue finding the word BACON (see 20231217) 1217
+	- Cont. Wordle Cacao issue, see [S1 Issue - Cacao Search 20220618-2358.txt] 0907
+		N-- faulty odometer? 
